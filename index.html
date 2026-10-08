@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Эрудит — игра в слова и их смыслы</title>
+<meta name="description" content="Каждый день — новое «Слово дня». Скачай «Эрудит» для iPhone или Android.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Эрудит">
+<meta property="og:title" content="Эрудит — игра в слова и их смыслы">
+<meta property="og:description" content="Каждый день — новое «Слово дня». Нажми, чтобы скачать.">
+<meta property="og:url" content="https://subitoit83-tech.github.io/erudit/">
+<meta property="og:image" content="https://subitoit83-tech.github.io/erudit/og.png">
+<meta property="og:image:width" content="1024">
+<meta property="og:image:height" content="500">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="apple-itunes-app" content="app-id=6813475935">
+<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<script>
+  // One link for everybody: the page sends each phone to its own store.
+  (function () {
+    var IOS = 'https://apps.apple.com/app/id6813475935';
+    var ANDROID = 'https://play.google.com/store/apps/details?id=com.haloword.app';
+    var ua = navigator.userAgent || '';
+    var isIOS = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+    var isAndroid = /Android/i.test(ua);
+    if (isIOS) location.replace(IOS);
+    else if (isAndroid) location.replace(ANDROID);
+  })();
+</script>
+<style>
+  :root { --orange: #FF6B12; --yellow: #FFE066; --ink: #111; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; background: var(--orange); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    display: flex; align-items: center; justify-content: center; padding: 24px 16px;
+  }
+  main { width: 100%; max-width: 420px; text-align: center; }
+  .tile {
+    width: 120px; height: 120px; margin: 0 auto 28px; background: var(--yellow);
+    border: 4px solid var(--ink); border-radius: 22px; box-shadow: 8px 8px 0 var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 72px; font-weight: 900; position: relative;
+  }
+  .tile small { position: absolute; right: 12px; bottom: 6px; font-size: 18px; font-weight: 800; }
+  h1 { font-size: 44px; font-weight: 900; margin: 0 0 8px; letter-spacing: -1px; }
+  p { font-size: 18px; font-weight: 600; margin: 0 0 32px; }
+  a.btn {
+    display: block; padding: 18px 20px; margin: 0 0 16px; background: var(--ink); color: #fff;
+    border: 4px solid var(--ink); border-radius: 18px; font-size: 20px; font-weight: 800;
+    text-decoration: none; box-shadow: 6px 6px 0 rgba(0,0,0,.35);
+  }
+  a.btn.alt { background: var(--yellow); color: var(--ink); }
+  a.btn:active { transform: translate(3px, 3px); box-shadow: 3px 3px 0 rgba(0,0,0,.35); }
+</style>
+</head>
+<body>
+<main>
+  <div class="tile">Э<small>8</small></div>
+  <h1>Эрудит</h1>
+  <p>Игра в слова и их смыслы.<br>Каждый день — новое «Слово дня».</p>
+  <a class="btn" href="https://apps.apple.com/app/id6813475935">🍎 Скачать для iPhone</a>
+  <a class="btn alt" href="https://play.google.com/store/apps/details?id=com.haloword.app">🤖 Скачать для Android</a>
+</main>
+</body>
+</html>
