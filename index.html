@@ -3,12 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Эрудит — игра в слова и их смыслы</title>
-<meta name="description" content="Каждый день — новое «Слово дня». Скачай «Эрудит» для iPhone или Android.">
+<title>Эрудика — слова, кроссворды и разминка для ума</title>
+<meta name="description" content="Слово дня для всей семьи, 170 кроссвордов из букв, 9 мини-игр и дуэли с друзьями. Без рекламы и таймеров. Скачайте «Эрудику» для iPhone или Android.">
+<meta name="theme-color" content="#0b1530">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Эрудит">
-<meta property="og:title" content="Эрудит — игра в слова и их смыслы">
-<meta property="og:description" content="Каждый день — новое «Слово дня». Нажми, чтобы скачать.">
+<meta property="og:site_name" content="Эрудика">
+<meta property="og:title" content="Эрудика — слова, кроссворды и разминка для ума">
+<meta property="og:description" content="Слово дня для всей семьи, 170 кроссвордов и 9 мини-игр. Без рекламы и таймеров. Нажмите, чтобы скачать.">
 <meta property="og:url" content="https://subitoit83-tech.github.io/erudit/">
 <meta property="og:image" content="https://subitoit83-tech.github.io/erudit/og.png">
 <meta property="og:image:width" content="1024">
@@ -17,11 +18,13 @@
 <meta name="apple-itunes-app" content="app-id=6813475935">
 <link rel="icon" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
+<link rel="preload" href="fonts/Geologica_700Bold.ttf" as="font" type="font/ttf" crossorigin>
 <script>
-  // One link for everybody: the page sends each phone to its own store.
+  // One link for everybody: a phone goes straight to its own store. Add ?page to see this page on a phone.
   (function () {
     var IOS = 'https://apps.apple.com/app/id6813475935';
     var ANDROID = 'https://play.google.com/store/apps/details?id=com.haloword.app';
+    if (/[?&]page\b/.test(location.search)) return;
     var ua = navigator.userAgent || '';
     var isIOS = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
     var isAndroid = /Android/i.test(ua);
@@ -30,39 +33,272 @@
   })();
 </script>
 <style>
-  :root { --orange: #FF6B12; --yellow: #FFE066; --ink: #111; }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; min-height: 100vh; background: var(--orange); color: var(--ink);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-    display: flex; align-items: center; justify-content: center; padding: 24px 16px;
+  @font-face { font-family: "Geologica"; src: url("fonts/Geologica_700Bold.ttf") format("truetype"); font-weight: 700; font-display: swap; }
+  @font-face { font-family: "Golos"; src: url("fonts/GolosText_500Medium.ttf") format("truetype"); font-weight: 500; font-display: swap; }
+  @font-face { font-family: "Golos"; src: url("fonts/GolosText_600SemiBold.ttf") format("truetype"); font-weight: 600; font-display: swap; }
+
+  /* «Сумерки» — the app's own tokens (src/constants/skins.js, src/logic/sky.js). */
+  :root {
+    --text: #15253a; --text2: #3b4c64;
+    --glass: rgba(255,255,255,.62); --edge: rgba(255,255,255,.92);
+    --amber: #ffc86b; --on-amber: #3a2508; --blue: #2f5bd3; --ok: #11704a;
+    --night-text: #eaf0fa; --night-text2: #a5b2ca; --gold: #f3d58c;
+    --shadow: 0 18px 44px rgba(21,37,58,.16);
+    --display: "Geologica", system-ui, sans-serif;
+    --body: "Golos", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   }
-  main { width: 100%; max-width: 420px; text-align: center; }
-  .tile {
-    width: 120px; height: 120px; margin: 0 auto 28px; background: var(--yellow);
-    border: 4px solid var(--ink); border-radius: 22px; box-shadow: 8px 8px 0 var(--ink);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 72px; font-weight: 900; position: relative;
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--body); font-weight: 500; color: var(--text); background: #0b1530; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  h1, h2, h3, .display { font-family: var(--display); font-weight: 700; line-height: 1.1; }
+  a { color: inherit; }
+  .wrap { width: min(1120px, 100% - 40px); margin: 0 auto; }
+
+  /* ── night: hero and final call ── */
+  .night { position: relative; color: var(--night-text); background: linear-gradient(180deg, #0b1530 0%, #111b3a 52%, #1b2143 100%); overflow: hidden; }
+  .night .glow { position: absolute; width: 1300px; height: 1300px; right: -420px; top: -700px; border-radius: 50%; pointer-events: none;
+    background: radial-gradient(circle, rgba(243,213,140,.5) 0%, rgba(243,213,140,.28) 18%, rgba(243,213,140,0) 60%); }
+  .stars { position: absolute; inset: 0; pointer-events: none; }
+  .stars i { position: absolute; border-radius: 50%; background: #fff; }
+
+  header { position: relative; z-index: 3; display: flex; align-items: center; justify-content: space-between; padding: 22px 0; }
+  header img { height: 44px; width: auto; display: block; }
+  .lang { display: inline-flex; padding: 4px; border-radius: 999px; background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.16); }
+  .lang button { font: 600 14px/1 var(--body); letter-spacing: .08em; color: var(--night-text2); background: none; border: 0; padding: 9px 16px; border-radius: 999px; cursor: pointer; }
+  .lang button[aria-pressed="true"] { background: var(--gold); color: #14182a; }
+
+  .hero { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 18px 0 96px; }
+  #lumen { position: relative; width: 230px; height: 230px; }
+  #lumen > div { position: absolute; inset: 0; }
+  .tiles { display: flex; gap: clamp(6px, 1.6vw, 14px); margin: 4px 0 30px; }
+  .tile { width: clamp(42px, 11vw, 92px); aspect-ratio: 1; border-radius: 30%; display: flex; align-items: center; justify-content: center;
+    font: 700 clamp(22px, 5.4vw, 46px)/1 var(--display); color: var(--gold);
+    background: rgba(255,255,255,.1); border: 2px solid rgba(255,255,255,.16); box-shadow: 0 18px 44px rgba(0,0,0,.3); }
+  .tile:last-child { background: var(--gold); color: #14182a; border-color: var(--gold); }
+  .hero h1 { font-size: clamp(34px, 6vw, 64px); max-width: 18ch; letter-spacing: -.02em; text-wrap: balance; }
+  .hero .sub { margin-top: 20px; max-width: 34em; font-size: clamp(17px, 2.2vw, 21px); line-height: 1.5; color: var(--night-text2); }
+  .buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 36px; }
+  .store { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 3px; padding: 14px 30px 15px; min-width: 232px; border-radius: 999px; text-decoration: none;
+    background: var(--gold); color: #14182a; box-shadow: 0 14px 34px rgba(243,213,140,.24); transition: transform .18s ease, box-shadow .18s ease; }
+  .store small { font: 600 12px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; opacity: .72; }
+  .store b { font: 700 22px/1.1 var(--display); }
+  .store:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(243,213,140,.34); }
+  .store.ghost { background: rgba(255,255,255,.09); color: var(--night-text); border: 2px solid rgba(255,255,255,.18); box-shadow: none; }
+  .store.ghost:hover { background: rgba(255,255,255,.15); box-shadow: none; }
+  .note { margin-top: 22px; font: 600 13px/1.4 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--night-text2); }
+
+  /* ── dusk: gallery and features ── */
+  .dusk { position: relative; background: linear-gradient(180deg, #b8b2e5 0%, #e7c6d9 50%, #f8d7c2 100%); padding: 84px 0 92px; overflow: hidden; }
+  .dusk::before { content: ""; position: absolute; width: 1300px; height: 1300px; left: -520px; top: -760px; border-radius: 50%; pointer-events: none;
+    background: radial-gradient(circle, rgba(255,190,143,.8) 0%, rgba(255,190,143,.42) 18%, rgba(255,190,143,0) 60%); }
+  .dusk .wrap { position: relative; }
+  h2 { font-size: clamp(28px, 4.4vw, 46px); text-align: center; letter-spacing: -.015em; text-wrap: balance; }
+  .lead { text-align: center; color: var(--text2); font-size: clamp(16px, 2vw, 19px); line-height: 1.5; margin: 14px auto 0; max-width: 36em; }
+
+  .shots { display: flex; gap: 22px; margin-top: 44px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 14px max(20px, calc((100% - 1120px) / 2)) 38px;
+    scrollbar-width: thin; scrollbar-color: rgba(21,37,58,.35) transparent; }
+  .shots img { flex: none; width: clamp(200px, 62vw, 252px); aspect-ratio: 9 / 16; object-fit: cover; border-radius: 30px; scroll-snap-align: center;
+    border: 3px solid var(--edge); box-shadow: 0 26px 60px rgba(40,30,90,.26); background: rgba(255,255,255,.4); }
+
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 46px; }
+  .card { background: var(--glass); border: 3px solid var(--edge); border-radius: 36px; box-shadow: var(--shadow); padding: 30px 30px 32px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .card .num { font: 700 68px/1 var(--display); letter-spacing: -.03em; color: var(--blue); }
+  .card h3 { font-size: 22px; margin-top: 12px; }
+  .card p { margin-top: 8px; font-size: 17px; line-height: 1.5; color: var(--text2); }
+  .chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 34px; }
+  .chip { padding: 13px 24px; border-radius: 999px; background: var(--glass); border: 3px solid var(--edge); box-shadow: var(--shadow); font: 600 16px/1 var(--body); }
+
+  /* ── final call ── */
+  .final { padding: 92px 0 56px; text-align: center; }
+  .final .wrap { position: relative; z-index: 2; }
+  .final h2 { color: var(--night-text); }
+  .final .buttons { margin-top: 34px; }
+  footer { position: relative; z-index: 2; margin-top: 64px; padding: 26px 0 0; border-top: 1px solid rgba(255,255,255,.12); font: 500 14px/1.5 var(--body); color: var(--night-text2); display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+
+  /* ── motion: each thing plays once as it arrives, then holds still ── */
+  .rise { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+  .rise.in { opacity: 1; transform: none; }
+  .tile { animation: land .8s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(.35s + var(--i) * .07s); }
+  @keyframes land { from { opacity: 0; transform: translateY(-46px) rotate(-6deg) scale(.88); } to { opacity: 1; transform: none; } }
+  html.still .tile { animation: none; }
+  html.still .rise { opacity: 1; transform: none; transition: none; }
+  @media (prefers-reduced-motion: reduce) { .rise { opacity: 1; transform: none; transition: none; } .tile { animation: none; } html { scroll-behavior: auto; } }
+
+  @media (max-width: 820px) {
+    .grid { grid-template-columns: 1fr 1fr; }
+    .dusk { padding: 64px 0 70px; }
   }
-  .tile small { position: absolute; right: 12px; bottom: 6px; font-size: 18px; font-weight: 800; }
-  h1 { font-size: 44px; font-weight: 900; margin: 0 0 8px; letter-spacing: -1px; }
-  p { font-size: 18px; font-weight: 600; margin: 0 0 32px; }
-  a.btn {
-    display: block; padding: 18px 20px; margin: 0 0 16px; background: var(--ink); color: #fff;
-    border: 4px solid var(--ink); border-radius: 18px; font-size: 20px; font-weight: 800;
-    text-decoration: none; box-shadow: 6px 6px 0 rgba(0,0,0,.35);
+  @media (max-width: 560px) {
+    .grid { grid-template-columns: 1fr; }
+    .store { width: 100%; min-width: 0; align-items: center; }
+    #lumen { width: 190px; height: 190px; }
+    .card .num { font-size: 58px; }
+    header img { height: 38px; }
   }
-  a.btn.alt { background: var(--yellow); color: var(--ink); }
-  a.btn:active { transform: translate(3px, 3px); box-shadow: 3px 3px 0 rgba(0,0,0,.35); }
 </style>
 </head>
 <body>
-<main>
-  <div class="tile">Э<small>8</small></div>
-  <h1>Эрудит</h1>
-  <p>Игра в слова и их смыслы.<br>Каждый день — новое «Слово дня».</p>
-  <a class="btn" href="https://apps.apple.com/app/id6813475935">🍎 Скачать для iPhone</a>
-  <a class="btn alt" href="https://play.google.com/store/apps/details?id=com.haloword.app">🤖 Скачать для Android</a>
-</main>
+
+<section class="night">
+  <div class="glow"></div>
+  <div class="stars" id="stars"></div>
+  <div class="wrap">
+    <header>
+      <img id="logo" src="logo-ru.svg" alt="Эрудика" width="147" height="44">
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-lang="ru" aria-pressed="true">RU</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </header>
+    <div class="hero">
+      <div id="lumen"><div id="lumen-mount"></div></div>
+      <div class="tiles" id="tiles" aria-hidden="true"></div>
+      <h1 data-t="h1">Слова на каждый день</h1>
+      <p class="sub" data-t="sub">Слово дня для всей семьи, кроссворды из букв и девять мини-игр. Без рекламы и таймеров, в своём темпе.</p>
+      <div class="buttons">
+        <a class="store" href="https://apps.apple.com/app/id6813475935"><small data-t="dl">Скачать в</small><b>App Store</b></a>
+        <a class="store ghost" href="https://play.google.com/store/apps/details?id=com.haloword.app"><small data-t="dl">Скачать в</small><b>Google Play</b></a>
+      </div>
+      <p class="note" data-t="note">Бесплатно · без рекламы · без таймеров</p>
+    </div>
+  </div>
+</section>
+
+<section class="dusk" id="inside">
+  <div class="wrap rise">
+    <h2 data-t="h2a">Посмотрите изнутри</h2>
+    <p class="lead" data-t="leadA">Задания, кроссворды, мини-игры и дуэли — всё в одном спокойном приложении.</p>
+  </div>
+  <div class="shots rise" id="shots" aria-label="Screenshots"></div>
+
+  <div class="wrap" style="margin-top: 30px">
+    <h2 class="rise" data-t="h2b">Что внутри</h2>
+    <div class="grid" id="grid"></div>
+    <div class="chips rise" id="chips"></div>
+  </div>
+</section>
+
+<section class="night final">
+  <div class="glow" style="left:-420px; right:auto"></div>
+  <div class="stars" id="stars2"></div>
+  <div class="wrap">
+    <h2 class="rise" data-t="h2c">Решите своё первое «Слово дня»</h2>
+    <div class="buttons rise">
+      <a class="store" href="https://apps.apple.com/app/id6813475935"><small data-t="dl">Скачать в</small><b>App Store</b></a>
+      <a class="store ghost" href="https://play.google.com/store/apps/details?id=com.haloword.app"><small data-t="dl">Скачать в</small><b>Google Play</b></a>
+    </div>
+    <footer>
+      <span>© <span id="year">2026</span> Эрудика</span>
+      <span data-t="foot">Прогресс хранится на вашем телефоне</span>
+    </footer>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="lumen.js"></script>
+<script>
+(function () {
+  var T = {
+    ru: {
+      title: 'Эрудика — слова, кроссворды и разминка для ума',
+      desc: 'Слово дня для всей семьи, 170 кроссвордов из букв, 9 мини-игр и дуэли с друзьями. Без рекламы и таймеров. Скачайте «Эрудику» для iPhone или Android.',
+      name: 'ЭРУДИКА', alt: 'Эрудика',
+      h1: 'Слова на каждый день',
+      sub: 'Слово дня для всей семьи, кроссворды из букв и девять мини-игр. Без рекламы и таймеров, в своём темпе.',
+      dl: 'Скачать в', note: 'Бесплатно · без рекламы · без таймеров',
+      h2a: 'Посмотрите изнутри', leadA: 'Задания, кроссворды, мини-игры и дуэли — всё в одном спокойном приложении.',
+      h2b: 'Что внутри', h2c: 'Решите своё первое «Слово дня»',
+      foot: 'Прогресс хранится на вашем телефоне',
+      cards: [
+        ['6', 'слов в «Слове дня»', 'Каждый день новый набор, одинаковый для всех. Решите и сравните результат с родными.'],
+        ['170', 'кроссвордов из букв', 'От 6 до 10 букв: соединяйте буквы на колесе и находите спрятанные слова.'],
+        ['9', 'мини-игр «Разминки»', 'Танграм, Льдинка, Ящики, Клетки, Тогыз кумалак и ещё четыре. Без таймеров.'],
+        ['5', 'ступеней сложности', 'Игра подбирает задания под ваш уровень и становится хитрее вместе с вами.'],
+        ['0', 'рекламы и штрафов', 'Ни рекламы, ни таймеров, ни наказаний за ошибки. Трудные слова вернутся сами.'],
+        ['3', 'режима для всех', 'Эрудика Teen 13+, взрослый и 50+ с крупным шрифтом. День и ночь.']
+      ],
+      chips: ['Дуэли с друзьями', 'Таблица лучших недели', 'Современные слова: «кринж», «вайб»', 'Работает без интернета']
+    },
+    en: {
+      title: 'Erudika — word games, crosswords and a warm-up for your mind',
+      desc: 'A Word of the Day for the whole family, 170 letter crosswords, 9 mini-games and duels with friends. No ads, no timers. Get Erudika for iPhone or Android.',
+      name: 'ERUDIKA', alt: 'Erudika',
+      h1: 'Words for every day',
+      sub: 'A Word of the Day for the whole family, letter crosswords and nine mini-games. No ads, no timers, at your own pace.',
+      dl: 'Download on', note: 'Free · no ads · no timers',
+      h2a: 'Take a look inside', leadA: 'Tasks, crosswords, mini-games and duels, all in one calm app.',
+      h2b: 'What’s inside', h2c: 'Solve your first Word of the Day',
+      foot: 'Your progress stays on your phone',
+      cards: [
+        ['6', 'words in the Word of the Day', 'A new set every day, the same for everyone. Solve it and compare with your family.'],
+        ['170', 'letter crosswords', 'From 6 to 10 letters: link the letters on the wheel and find the hidden words.'],
+        ['9', 'warm-up mini-games', 'Tangram, Ice Cube, Crates, Number Cages, Togyz Kumalak and four more. No timers.'],
+        ['5', 'steps of difficulty', 'The game matches tasks to your level and gets trickier as you do.'],
+        ['0', 'ads or penalties', 'No ads, no timers, no punishment for mistakes. Hard words come back on their own.'],
+        ['3', 'modes for everyone', 'Erudika Teen 13+, adult and 50+ with large text. Day and night.']
+      ],
+      chips: ['Duels with friends', 'Weekly table of the best', 'Modern words like “no cap” and “rizz”', 'Works offline']
+    }
+  };
+  var $ = function (s) { return document.querySelector(s); };
+  var $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
+
+  // Stars: a fixed hand-placed set, the same fractions the app's night sky uses.
+  var STARS = [[.08,.05,2.5],[.22,.09,1.5],[.35,.04,2],[.48,.12,1.5],[.61,.06,2.5],[.14,.17,2],[.29,.21,1.5],[.53,.2,2],[.67,.15,1.5],[.9,.19,2],[.45,.02,1.5],[.97,.1,1.5],[.78,.3,1.5],[.05,.38,1.5],[.18,.55,2]];
+  ['#stars', '#stars2'].forEach(function (id, k) {
+    $(id).innerHTML = STARS.map(function (s, i) {
+      return '<i style="left:' + (s[0] * 100) + '%;top:' + ((k ? s[1] * 1.6 : s[1]) * 100) + '%;width:' + s[2] * 2 + 'px;height:' + s[2] * 2 + 'px;opacity:' + (0.45 + (i % 3) * 0.17) + '"></i>';
+    }).join('');
+  });
+
+  function setLang(l, remember) {
+    var t = T[l];
+    document.documentElement.lang = l;
+    document.title = t.title;
+    $('meta[name="description"]').setAttribute('content', t.desc);
+    $$('[data-t]').forEach(function (el) { var v = t[el.getAttribute('data-t')]; if (v) el.textContent = v; });
+    $$('[data-lang]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === l)); });
+    var logo = $('#logo'); logo.src = 'logo-' + l + '.svg'; logo.alt = t.alt;
+    $('#tiles').innerHTML = t.name.split('').map(function (c, i) { return '<div class="tile" style="--i:' + i + '">' + c + '</div>'; }).join('');
+    $('#shots').innerHTML = [1,2,3,4,5,6,7,8].map(function (n) {
+      return '<img src="shots/' + l + '/' + n + '.jpg" alt="' + t.alt + ' — ' + n + '/8" width="252" height="448" loading="lazy">';
+    }).join('');
+    $('#grid').innerHTML = t.cards.map(function (c) {
+      return '<div class="card rise"><div class="num">' + c[0] + '</div><h3>' + c[1] + '</h3><p>' + c[2] + '</p></div>';
+    }).join('');
+    $('#chips').innerHTML = t.chips.map(function (c) { return '<span class="chip">' + c + '</span>'; }).join('');
+    watch();
+    if (remember) { try { localStorage.setItem('erudika.lang', l); } catch (e) {} }
+  }
+
+  // Each block fades up once when it first scrolls into view.
+  var io = ('IntersectionObserver' in window) ? new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 }) : null;
+  var still = /[?&]still\b/.test(location.search);   // ?still: no animation at all (also used for screenshots)
+  function watch() { $$('.rise:not(.in)').forEach(function (el) { if (io && !still) io.observe(el); else el.classList.add('in'); }); }
+
+  if (/[?&]still\b/.test(location.search)) document.documentElement.classList.add('still');
+  var saved = null; try { saved = localStorage.getItem('erudika.lang'); } catch (e) {}
+  var q = (location.search.match(/[?&]lang=(ru|en)/) || [])[1];
+  var nav = (navigator.language || 'ru').slice(0, 2).toLowerCase();
+  var ruish = ['ru', 'uk', 'be', 'kk', 'ky', 'uz', 'tg', 'hy', 'az', 'ka'].indexOf(nav) >= 0;
+  setLang(q || saved || (ruish ? 'ru' : 'en'), false);
+  $$('[data-lang]').forEach(function (b) { b.addEventListener('click', function () { setLang(b.getAttribute('data-lang'), true); }); });
+  $('#year').textContent = new Date().getFullYear();
+
+  // Lumen drops out of the night sky, lands, waves once and rests.
+  var calm = still || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  if (window.Lumen && window.gsap) {
+    var lm = Lumen.mount($('#lumen-mount'), { id: 'lmHero' });
+    var t0 = gsap.timeline(); lm.mood(t0, 0, 'happy', 0.01); t0.progress(1);
+    if (!calm) {
+      var tl = gsap.timeline();
+      tl.fromTo('#lumen', { y: -520, rotation: -18, autoAlpha: 0 }, { y: 0, rotation: 0, autoAlpha: 1, duration: 0.8, ease: 'power2.in' }, 0.1);
+      lm.squash(tl, 0.9, 0.24).wave(tl, 1.25, 'r', 2).flash(tl, 2.2).blink(tl, 2.6);
+    }
+  }
+})();
+</script>
 </body>
 </html>
